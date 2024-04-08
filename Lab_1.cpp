@@ -52,14 +52,14 @@ int *find_by_salary(Employee *employees, int n, double left, double right){
 
 int main(){
     int n;
+    cout << "Enter number of employees\n";
     cin >> n;
-    Employee employees[n];
+    Employee *employees = new Employee[n];
     
     for (int i = 0; i < n; ++i){
-        char tmp;
         employees[i] = Employee();
-        char *name = new char[100];
         cout << "Enter name\n";
+        char *name = new char[100];
         cin.ignore(); // это надо, потому что c++ дурацкий язык и cin.getline() считывает предыдущую строку, поэтому её надо прогнорировать
         cin.getline(name, 100);
         employees[i].name = new char[strlen(name)]; // тут создаётся массив ровно такой длины, какая нужна, чтобы вместить введённое имя
@@ -88,6 +88,7 @@ int main(){
         cin >> salary;
         employees[i].salary = salary;
     }
+
     
     for (int i = 0; i < n; ++i){ // вывод всех введённых рабочих
         cout << employees[i].name << "\n"
@@ -99,7 +100,7 @@ int main(){
     
     int left, right;
 
-    cout << "Enter age range";
+    cout << "Enter age range ";
     cin >> left >> right; // можно через пробел, а можно с новой строки
 
     int *ages = find_by_age(employees, n, left, right); // создаётся указатель на int
@@ -121,4 +122,15 @@ int main(){
     out << "Average salary " << salary / (ages[0] - 1); // -1, потому что длина массива на 1 больше из-за того, что 0 элемент хранит размер
 
     out.close(); // закрытие файла
+
+    delete[] ages;
+
+    for(int i = 0; i < n; ++i){
+        delete[] employees[i].name;
+        delete[] employees[i].gender;
+        delete[] employees[i].job;
+    }
+
+    delete[] employees;
+
 }

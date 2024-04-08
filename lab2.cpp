@@ -16,6 +16,8 @@ struct Car{
 
 void add_car(Car *root, Car car, char *number){ // добавление машины в ребёнки по гос номеру
     Car *node = root;
+    if(node->next == nullptr && strcmp(number, node->number) != 0)
+        return;
     do{
         if (strcmp(node->number, number) == 0){
 
@@ -31,7 +33,7 @@ void add_car(Car *root, Car car, char *number){ // добавление маши
             return;
         }
         node = node->next;
-    }while ((node->next != nullptr));
+    }while ((node != nullptr));
     cout << "Wrong number\n";
 }
 
@@ -43,18 +45,19 @@ void delete_car(Car *root, char *number){ // удаление машины
         return;
     }
     Car *node = root;
+    if(node->next == nullptr)
+        return;
     do{
         if (strcmp(node->next->number, number) == 0){
             Car *tmp = node->next;
             node->next = tmp->next;
-            delete tmp;
             return;
         }
         node = node->next;
-    }while ((node->next != nullptr));
+    }while (node->next != nullptr);
 }
 
-Car *find_cars(Car *root, int year, int *size){ // поиск по номеру
+Car *find_cars(Car *root, int year, int *size){ // поиск по году
     *size = 0;
 
     Car *node = root;
@@ -91,6 +94,7 @@ int main(){
     Car *root = node;
     Car *prev_node = nullptr;
 
+    cout << "Enter number of cars\n";
     int n;
     cin >> n;
     cin.ignore();
@@ -100,18 +104,23 @@ int main(){
         if (prev_node != nullptr){
             prev_node->next = node;
         }
-
+        cout << "Enter number\n";
         char *number = new char[100];
         cin.getline(number, 100);
-        
+
+        cout << "Enter brand\n";
         char *brand = new char[100];
         cin.getline(brand, 100);
 
+        cout << "Enter color\n";
         char *color = new char[100];
         cin.getline(color, 100);
         
+        cout << "Enter year\n";
         int year;
         cin >> year;
+
+        cout << "Enter mass\n";
         double mass;
         cin >> mass;
         cin.ignore();
@@ -128,10 +137,13 @@ int main(){
         prev_node = node;
         node = new Car();
     }
+    char *num2 = new char[2];
+    strcpy(num2, "2");
+    if(root->next != nullptr)
+        add_car(root, *(root->next), num2);
 
-    add_car(root, *(root->next), "number2");
-
-    delete_car(root, root->next->number);
+    if(root -> next != nullptr)
+        delete_car(root, root->next->number);
 
     int size;
 
@@ -139,6 +151,21 @@ int main(){
     cars = find_cars(root, 2025, &size);
     
     for (int i = 0; i < size; ++i){
-        cout << cars[i].year << "\n";
+        cout << cars[i].number << "\n" <<
+        cars[i].brand << "\n" <<
+        cars[i].color << "\n" <<
+        cars[i].year << "\n" <<
+        cars[i].mass << "\n\n";
     }
+    Car *car = root;
+    Car *prev_car = car;
+
+    while(car != nullptr){
+        car = prev_car->next;
+        delete prev_car;
+    }
+
+
+    delete[] cars;
+    delete[] num2;
 }
